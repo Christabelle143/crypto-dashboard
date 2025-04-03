@@ -1,56 +1,48 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-const API_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd';
+const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd";
 
+// Fetch cryptos only if data is not available or expired
+export const fetchCryptos = createAsyncThunk(
+  "crypto/fetchCryptos",
+  async (_, { getState }) => {
+    const { crypto } = getState();
+    const cacheTime = 5 * 60 * 1000; 
+    const currentTime = new Date().getTime();
 
-export const fetchCryptos = createAsyncThunk('crypto/fetchCryptos', async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
-});
+    if (crypto.lastFetched && currentTime - crypto.lastFetched < cacheTime) {
+      return crypto.cryptos; 
+    }
+
+    const response = await axios.get(API_URL);
+    return { data: response.data, timestamp: currentTime };
+  }
+);
 
 const cryptoSlice = createSlice({
-  name: 'crypto',
+  name: "crypto",
   initialState: {
     cryptos: [],
-    favorites: [],
-    searchQuery: '',
-    sortOrder: 'asc',
-    status: 'idle',
+    status: "idle",
     error: null,
-  },
-  reducers: {
-    toggleFavorite: (state, action) => {
-      const id = action.payload;
-      const isFavorite = state.favorites.includes(id);
-      if (isFavorite) {
-        state.favorites = state.favorites.filter(favId => favId !== id);
-      } else {
-        state.favorites.push(id);
-      }
-    },
-    setSearchQuery: (state, action) => {
-      state.searchQuery = action.payload;
-    },
-    toggleSortOrder: (state) => {
-      state.sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc';
-    },
+    lastFetched: null,
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCryptos.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(fetchCryptos.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.cryptos = action.payload;
+        state.status = "succeeded";
+        state.cryptos = action.payload.data;
+        state.lastFetched = action.payload.timestamp;
       })
       .addCase(fetchCryptos.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = "failed";
         state.error = action.error.message;
       });
   },
 });
 
-export const { toggleFavorite, setSearchQuery, toggleSortOrder } = cryptoSlice.actions;
 export default cryptoSlice.reducer;
