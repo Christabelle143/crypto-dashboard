@@ -9,7 +9,7 @@ const CryptoChartModal = ({ crypto, open, onClose }) => {
   useEffect(() => {
     if (crypto && open) {
       const fetchHistoricalData = async () => {
-        // Replace this with your API or service for fetching historical data
+        //e.g 7 days
         const response = await fetch(`/api/cryptos/${crypto.id}/history?days=7`);
         const data = await response.json();
         setHistoricalData(data);
