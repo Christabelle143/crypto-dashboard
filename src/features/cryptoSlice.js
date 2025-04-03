@@ -8,7 +8,7 @@ export const fetchCryptos = createAsyncThunk(
   "crypto/fetchCryptos",
   async (_, { getState }) => {
     const { crypto } = getState();
-    const cacheTime = 5 * 60 * 1000; // Cache for 5 minutes
+    const cacheTime = 5 * 60 * 1000; 
     const currentTime = new Date().getTime();
 
     if (crypto.lastFetched && currentTime - crypto.lastFetched < cacheTime) {
