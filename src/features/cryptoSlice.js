@@ -13,8 +13,28 @@ const cryptoSlice = createSlice({
   name: 'crypto',
   initialState: {
     cryptos: [],
+    favorites: [],
+    searchQuery: '',
+    sortOrder: 'asc',
     status: 'idle',
     error: null,
+  },
+  reducers: {
+    toggleFavorite: (state, action) => {
+      const id = action.payload;
+      const isFavorite = state.favorites.includes(id);
+      if (isFavorite) {
+        state.favorites = state.favorites.filter(favId => favId !== id);
+      } else {
+        state.favorites.push(id);
+      }
+    },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
+    },
+    toggleSortOrder: (state) => {
+      state.sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc';
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -32,5 +52,5 @@ const cryptoSlice = createSlice({
   },
 });
 
-
+export const { toggleFavorite, setSearchQuery, toggleSortOrder } = cryptoSlice.actions;
 export default cryptoSlice.reducer;
