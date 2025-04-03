@@ -9,15 +9,15 @@ const CryptoList = () => {
   const { favorites, searchQuery, sortOrder } = useSelector((state) => state.crypto);
   const [cryptos, setCryptos] = useState([]);
   const [ws, setWs] = useState(null);
-  const [selectedCrypto, setSelectedCrypto] = useState(null); // Track selected crypto
-  const [modalOpen, setModalOpen] = useState(false); // Modal open state
+  const [selectedCrypto, setSelectedCrypto] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false); 
 
   useEffect(() => {
-    // List of cryptocurrencies you want to track
+  
     const cryptoPairs = ["btcusdt", "ethusdt", "ltcusdt"];
     const socketUrl = `wss://stream.binance.com:9443/stream?streams=${cryptoPairs.map(pair => `${pair}@trade`).join('/')}`;
 
-    // Connect to WebSocket (Example: Binance API)
+
     const socket = new WebSocket(socketUrl);
 
     socket.onopen = () => {
@@ -54,7 +54,7 @@ const CryptoList = () => {
     };
   }, []);
 
-  // Filter & Sort Cryptos
+
   const filteredCryptos = cryptos.filter((crypto) =>
     crypto.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -65,7 +65,7 @@ const CryptoList = () => {
 
   const handleFavorite = (id) => dispatch(toggleFavorite(id));
 
-  // Prevent unnecessary re-renders
+
   const Row = useCallback(
     ({ index, style }) => {
       const crypto = sortedCryptos[index];
@@ -74,8 +74,8 @@ const CryptoList = () => {
           <span>{crypto.name} - ${crypto.current_price.toFixed(2)}</span>
           <button
             onClick={() => {
-              setSelectedCrypto(crypto); // Set the selected crypto
-              setModalOpen(true); // Open the modal
+              setSelectedCrypto(crypto); 
+              setModalOpen(true); 
             }}
             style={{ marginLeft: "10px" }}
           >
@@ -129,7 +129,7 @@ const CryptoList = () => {
         <CryptoChartModal
           crypto={selectedCrypto}
           open={modalOpen}
-          onClose={() => setModalOpen(false)} // Close the modal
+          onClose={() => setModalOpen(false)} 
         />
       )}
     </div>
