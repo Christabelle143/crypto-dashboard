@@ -1,13 +1,178 @@
-body {
+/* General Reset and Layout */
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(145deg, #2c3e50, #34495e);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
+
+/* Main App Container */
+.App {
+  text-align: center;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 50px;
+}
+
+/* Header Styling */
+h1 {
+  font-size: 3rem;
+  color: #f39c12;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* Search and Sort Controls */
+input {
+  padding: 10px 15px;
+  margin: 15px;
+  border: none;
+  border-radius: 5px;
+  width: 80%;
+  max-width: 350px;
+  font-size: 1rem;
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  outline: none;
+}
+
+input:focus {
+  border: 2px solid #f39c12;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #f39c12;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #e67e22;
+}
+
+/* Crypto List Styling */
+ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+}
+
+li {
+  margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #1abc9c, #16a085);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+li:hover {
+  background: linear-gradient(145deg, #1dd1a1, #10ac84);
+  transform: translateY(-5px);
+}
+
+li span {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+li span:first-child {
+  flex-grow: 1;
+}
+
+/* Favorite Button */
+button.fav-button {
+  padding: 8px 12px;
+  background-color: #e74c3c;
+  border-radius: 5px;
+  color: white;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+button.fav-button:hover {
+  background-color: #c0392b;
+}
+
+/* Favorites Section Styling */
+h2 {
+  font-size: 2rem;
+  margin-top: 50px;
+  color: #f39c12;
+  font-weight: 700;
+}
+
+ul.favorites-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+ul.favorites-list li {
+  flex-basis: calc(33% - 30px);
+  box-sizing: border-box;
+  margin-bottom: 15px;
+}
+
+/* Mobile Styling */
+@media (max-width: 768px) {
+  .App {
+    width: 90%;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  ul.favorites-list li {
+    flex-basis: calc(50% - 15px);
+  }
+
+  li {
+    padding: 12px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  li {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+
