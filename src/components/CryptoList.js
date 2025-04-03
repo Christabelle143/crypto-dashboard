@@ -2,16 +2,23 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite, setSearchQuery, toggleSortOrder } from "../features/cryptoSlice";
 import { FixedSizeList as List } from "react-window";
+import CryptoChartModal from './CryptoChartModal'; // Import the modal
 
 const CryptoList = () => {
   const dispatch = useDispatch();
   const { favorites, searchQuery, sortOrder } = useSelector((state) => state.crypto);
   const [cryptos, setCryptos] = useState([]);
   const [ws, setWs] = useState(null);
+  const [selectedCrypto, setSelectedCrypto] = useState(null); // Track selected crypto
+  const [modalOpen, setModalOpen] = useState(false); // Modal open state
 
   useEffect(() => {
+    // List of cryptocurrencies you want to track
+    const cryptoPairs = ["btcusdt", "ethusdt", "ltcusdt"];
+    const socketUrl = `wss://stream.binance.com:9443/stream?streams=${cryptoPairs.map(pair => `${pair}@trade`).join('/')}`;
+
     // Connect to WebSocket (Example: Binance API)
-    const socket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
+    const socket = new WebSocket(socketUrl);
 
     socket.onopen = () => {
       console.log("Connected to WebSocket");
@@ -20,9 +27,9 @@ const CryptoList = () => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const updatedCrypto = {
-        id: "bitcoin",
-        name: "Bitcoin",
-        current_price: parseFloat(data.p), // Price from WebSocket
+        id: data.data.s.toLowerCase(),
+        name: data.data.s.toUpperCase(),
+        current_price: parseFloat(data.data.p),
       };
 
       setCryptos((prevCryptos) => {
@@ -43,7 +50,7 @@ const CryptoList = () => {
     setWs(socket);
 
     return () => {
-      socket.close(); // Cleanup WebSocket on component unmount
+      socket.close();
     };
   }, []);
 
@@ -65,7 +72,19 @@ const CryptoList = () => {
       return (
         <div style={{ ...style, padding: "10px", borderBottom: "1px solid #ddd" }}>
           <span>{crypto.name} - ${crypto.current_price.toFixed(2)}</span>
-          <button onClick={() => handleFavorite(crypto.id)} style={{ marginLeft: "10px" }}>
+          <button
+            onClick={() => {
+              setSelectedCrypto(crypto); // Set the selected crypto
+              setModalOpen(true); // Open the modal
+            }}
+            style={{ marginLeft: "10px" }}
+          >
+            View Chart
+          </button>
+          <button
+            onClick={() => handleFavorite(crypto.id)}
+            style={{ marginLeft: "10px" }}
+          >
             {favorites.includes(crypto.id) ? "Unfavorite" : "Favorite"}
           </button>
         </div>
@@ -104,6 +123,15 @@ const CryptoList = () => {
           ) : null;
         })}
       </ul>
+
+      {/* Modal for showing the chart */}
+      {selectedCrypto && (
+        <CryptoChartModal
+          crypto={selectedCrypto}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)} // Close the modal
+        />
+      )}
     </div>
   );
 };
