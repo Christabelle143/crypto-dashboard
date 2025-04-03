@@ -8,7 +8,7 @@ export const fetchCryptos = createAsyncThunk(
   "crypto/fetchCryptos",
   async (_, { getState }) => {
     const { crypto } = getState();
-    const cacheTime = 5 * 60 * 1000; 
+    const cacheTime = 5 * 60 * 1000; // Cache for 5 minutes
     const currentTime = new Date().getTime();
 
     if (crypto.lastFetched && currentTime - crypto.lastFetched < cacheTime) {
@@ -24,9 +24,28 @@ const cryptoSlice = createSlice({
   name: "crypto",
   initialState: {
     cryptos: [],
+    favorites: [],
+    searchQuery: "",
+    sortOrder: "asc",
     status: "idle",
     error: null,
     lastFetched: null,
+  },
+  reducers: {
+    toggleFavorite: (state, action) => {
+      const id = action.payload;
+      if (state.favorites.includes(id)) {
+        state.favorites = state.favorites.filter((fav) => fav !== id);
+      } else {
+        state.favorites.push(id);
+      }
+    },
+    setSearchQuery: (state, action) => {
+      state.searchQuery = action.payload;
+    },
+    toggleSortOrder: (state) => {
+      state.sortOrder = state.sortOrder === "asc" ? "desc" : "asc";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -45,4 +64,5 @@ const cryptoSlice = createSlice({
   },
 });
 
+export const { toggleFavorite, setSearchQuery, toggleSortOrder } = cryptoSlice.actions;
 export default cryptoSlice.reducer;
