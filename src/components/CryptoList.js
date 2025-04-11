@@ -14,7 +14,18 @@ const CryptoList = () => {
 
   useEffect(() => {
   
-    const cryptoPairs = ["btcusdt", "ethusdt", "ltcusdt"];
+    const cryptoPairs = [
+      "btcusdt",
+      "ethusdt",
+      "ltcusdt",
+      "bnbusdt",
+      "xrpusdt",
+      "adausdt",
+      "solusdt",
+      "dogeusdt",
+      "dotusdt",
+      "maticusdt"
+    ];
     const socketUrl = `wss://stream.binance.com:9443/stream?streams=${cryptoPairs.map(pair => `${pair}@trade`).join('/')}`;
 
 
