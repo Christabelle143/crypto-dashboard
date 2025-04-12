@@ -9,11 +9,23 @@ const CryptoChartModal = ({ crypto, open, onClose }) => {
   useEffect(() => {
     if (crypto && open) {
       const fetchHistoricalData = async () => {
-        //e.g 7 days
-        const response = await fetch(`/api/cryptos/${crypto.id}/history?days=7`);
-        const data = await response.json();
-        setHistoricalData(data);
+        try {
+          const response = await fetch(
+            `https://api.coingecko.com/api/v3/coins/${crypto.id}/market_chart?vs_currency=usd&days=7`
+          );
+          const data = await response.json();
+  
+          const formattedData = data.prices.map(([timestamp, price]) => {
+            const date = new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            return { date, price: parseFloat(price.toFixed(2)) };
+          });
+  
+          setHistoricalData(formattedData);
+        } catch (error) {
+          console.error("Error fetching historical data:", error);
+        }
       };
+  
       fetchHistoricalData();
     }
   }, [crypto, open]);
