@@ -1,4 +1,3 @@
-// src/components/CryptoChartModal.js
 import React, { useEffect, useState } from 'react';
 import { Modal, Button } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -30,10 +29,17 @@ const CryptoChartModal = ({ crypto, open, onClose }) => {
                 );
           const data = await response.json();
   
-          const formattedData = data.prices.map(([timestamp, price]) => {
-            const date = new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            return { date, price: parseFloat(price.toFixed(2)) };
-          });
+          const seenDays = new Set();
+          const formattedData = data.prices
+            .map(([timestamp, price]) => {
+              const date = new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+              return { date, price: parseFloat(price.toFixed(2)) };
+            })
+            .filter(({ date }) => {
+              if (seenDays.has(date)) return false;
+              seenDays.add(date);
+              return true;
+            });
   
           setHistoricalData(formattedData);
         } catch (error) {
