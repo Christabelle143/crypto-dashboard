@@ -10,9 +10,24 @@ const CryptoChartModal = ({ crypto, open, onClose }) => {
     if (crypto && open) {
       const fetchHistoricalData = async () => {
         try {
-          const response = await fetch(
-            `https://api.coingecko.com/api/v3/coins/${crypto.id}/market_chart?vs_currency=usd&days=7`
-          );
+               
+          const idMap = {
+            btcusdt: 'bitcoin',
+            ethusdt: 'ethereum',
+            ltcusdt: 'litecoin',
+            bnbusdt: 'binancecoin',
+            xrpusdt: 'ripple',
+            adausdt: 'cardano',
+            solusdt: 'solana',
+            dogeusdt: 'dogecoin',
+            dotusdt: 'polkadot',
+            maticusdt: 'matic-network',
+          };
+      
+                const mappedId = idMap[crypto.id.toLowerCase()] || crypto.id;
+                const response = await fetch(
+                  `https://api.coingecko.com/api/v3/coins/${mappedId}/market_chart?vs_currency=usd&days=7`
+                );
           const data = await response.json();
   
           const formattedData = data.prices.map(([timestamp, price]) => {
